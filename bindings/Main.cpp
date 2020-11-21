@@ -267,5 +267,5 @@ void V8::RegisterSharedMain(v8::Local<v8::Context> ctx, v8::Local<v8::Object> ex
 
 	V8::DefineOwnProperty(isolate, ctx, exports, "Version", v8::String::NewFromUtf8(isolate, alt::ICore::Instance().GetVersion().CStr()).ToLocalChecked());
 	V8::DefineOwnProperty(isolate, ctx, exports, "Branch", v8::String::NewFromUtf8(isolate, alt::ICore::Instance().GetBranch().CStr()).ToLocalChecked());
-	V8::DefineOwnProperty(isolate, ctx, exports, "sdkVersion", v8::Integer::New(isolate, alt::ICore::Instance().SDK_VERSION));
+	V8::DefineOwnProperty(isolate, ctx, exports, "SDKVersion", v8::Integer::New(isolate, alt::ICore::Instance().SDK_VERSION));
 }
