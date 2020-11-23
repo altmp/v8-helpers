@@ -33,7 +33,7 @@ public:
 			return nullptr;
 
 		v8::Local<v8::Object> obj = val.As<v8::Object>();
-		if (obj->InternalFieldCount() != 1)
+		if (obj->InternalFieldCount() != 2)
 			return nullptr;
 
 		v8::Local<v8::Value> i = obj->GetInternalField(0);

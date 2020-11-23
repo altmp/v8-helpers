@@ -440,3 +440,8 @@ namespace V8
 		V8_CHECK(!baseObject.IsEmpty(), "Failed to bind base object"); \
 		resource->BindEntity(info.This(), baseObject.Get()); \
 	}
+
+#define V8_MARK_ENTITY_FROM_JS(entity) \
+	{ \
+		resource->GetEntity(entity.Get())->GetJSVal(isolate)->SetInternalField(1, v8::Boolean::New(isolate, true)); \
+	}

@@ -90,12 +90,25 @@ bool V8ResourceImpl::DeleteEntity(alt::Ref<alt::IBaseObject> handle)
 		return false;
 	}
 	
+
+	V8Entity* ent = it->second;
+
+	if (!ent)
+		return false;
+
+	// Check if the base object was created in JS
+	v8::Local<v8::Value> fromJS = ent->GetJSVal(isolate)->GetInternalField(1);
+
+	//Log::Info << "[DeleteEntity] Base object from JS: " << std::to_string(static_cast<bool>(fromJS.As<v8::Boolean>()->Value())) << Log::Endl;
+	//Log::Info << std::to_string((uint8_t)handle->GetType()) << Log::Endl;
+
+	if (static_cast<bool>(fromJS.As<v8::Boolean>()->Value()) == true) {
+		uint64_t references = resource->RemoveReference(handle);
+		if (references > 2) Log::Warning << "[JS] Entity reference still in use (" << std::to_string(references) << " times)" << Log::Endl;
+	}
+
 	delete it->second;
 	entities.erase(it);
-
-	// BAD, SHOULD ONLY BE DONE FOR ENTITIES
-	// THAT WAS CREATED FROM JS
-	resource->RemoveReference(handle);
 
 	return true;
 }

@@ -112,6 +112,7 @@ public:
 		V8Class *_class = V8Entity::GetClass(handle);
 
 		V8Entity *ent = new V8Entity(GetContext(), _class, _class->CreateInstance(GetContext()), handle);
+		ent->GetJSVal(isolate)->SetInternalField(1, v8::Boolean::New(isolate, false));
 		entities.insert({handle, ent});
 		return ent;
 	}
