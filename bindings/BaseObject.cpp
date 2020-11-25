@@ -17,9 +17,9 @@ static void ValidGetter(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8
 {
 	V8_GET_ISOLATE(info);
 
-	V8_GET_THIS_BASE_OBJECT(obj, alt::IBaseObject);
+	V8Entity* entity = V8Entity::Get(info.This());
 
-	V8_RETURN_BOOLEAN(true);
+	V8_RETURN_BOOLEAN(static_cast<bool>(entity));
 }
 
 static void HasMeta(const v8::FunctionCallbackInfo<v8::Value> &info)
