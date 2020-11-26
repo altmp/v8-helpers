@@ -228,6 +228,15 @@ v8::Local<v8::Array> V8ResourceImpl::GetAllVehicles()
 std::vector<V8::EventCallback *> V8ResourceImpl::GetLocalHandlers(const std::string &name)
 {
 	std::vector<V8::EventCallback *> handlers;
+
+	if (!name.empty()) {
+		// push generic handlers
+		auto range = localHandlers.equal_range(std::string());
+
+		for (auto it = range.first; it != range.second; ++it)
+			handlers.push_back(&it->second);
+	}
+
 	auto range = localHandlers.equal_range(name);
 
 	for (auto it = range.first; it != range.second; ++it)
@@ -239,6 +248,15 @@ std::vector<V8::EventCallback *> V8ResourceImpl::GetLocalHandlers(const std::str
 std::vector<V8::EventCallback *> V8ResourceImpl::GetRemoteHandlers(const std::string &name)
 {
 	std::vector<V8::EventCallback *> handlers;
+
+	if (!name.empty()) {
+		// push generic handlers
+		auto range = remoteHandlers.equal_range(std::string());
+
+		for (auto it = range.first; it != range.second; ++it)
+			handlers.push_back(&it->second);
+	}
+
 	auto range = remoteHandlers.equal_range(name);
 
 	for (auto it = range.first; it != range.second; ++it)
@@ -249,6 +267,8 @@ std::vector<V8::EventCallback *> V8ResourceImpl::GetRemoteHandlers(const std::st
 
 void V8ResourceImpl::InvokeEventHandlers(const alt::CEvent *ev, const std::vector<V8::EventCallback *> &handlers, std::vector<v8::Local<v8::Value>> &args)
 {
+	std::vector<v8::Local<v8::Value>> specializedArgs(args.begin() + 1, args.end());
+
 	for (auto handler : handlers)
 	{
 		int64_t time = GetTime();
@@ -257,7 +277,9 @@ void V8ResourceImpl::InvokeEventHandlers(const alt::CEvent *ev, const std::vecto
 			continue;
 
 		V8Helpers::TryCatch([&] {
-			v8::MaybeLocal<v8::Value> retn = handler->fn.Get(isolate)->Call(GetContext(), v8::Undefined(isolate), args.size(), args.data());
+			v8::MaybeLocal<v8::Value> retn = (handler->generic)
+				? handler->fn.Get(isolate)->Call(GetContext(), v8::Undefined(isolate), args.size(), args.data())
+				: handler->fn.Get(isolate)->Call(GetContext(), v8::Undefined(isolate), specializedArgs.size(), specializedArgs.data());
 
 			if (retn.IsEmpty())
 				return false;

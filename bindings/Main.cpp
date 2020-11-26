@@ -16,9 +16,18 @@ static void On(const v8::FunctionCallbackInfo<v8::Value> &info)
 {
 	V8_GET_ISOLATE_CONTEXT_RESOURCE();
 
-	V8_CHECK_ARGS_LEN(2);
-	V8_ARG_TO_STRING(1, evName);
-	V8_ARG_TO_FUNCTION(2, callback);
+	V8_CHECK_ARGS_LEN2(1, 2);
+
+	alt::String evName;
+	v8::Local<v8::Function> callback;
+
+	if (info.Length() == 1) {
+		V8_CHECK(V8::SafeToFunction(info[0], ctx, callback), "Failed to convert argument 0 to function")
+	}
+	else {
+		V8_CHECK(V8::SafeToString(info[0], isolate, ctx, evName), "Failed to convert argument 0 to string")
+		V8_CHECK(V8::SafeToFunction(info[1], ctx, callback), "Failed to convert argument 1 to function")
+	}
 
 	resource->SubscribeLocal(evName.ToString(), callback, V8::SourceLocation::GetCurrent(isolate));
 }
@@ -27,9 +36,18 @@ static void Off(const v8::FunctionCallbackInfo<v8::Value> &info)
 {
 	V8_GET_ISOLATE_CONTEXT_RESOURCE();
 
-	V8_CHECK_ARGS_LEN(2);
-	V8_ARG_TO_STRING(1, evName);
-	V8_ARG_TO_FUNCTION(2, callback);
+	V8_CHECK_ARGS_LEN2(1, 2);
+
+	alt::String evName;
+	v8::Local<v8::Function> callback;
+
+	if (info.Length() == 1) {
+		V8_CHECK(V8::SafeToFunction(info[0], ctx, callback), "Failed to convert argument 0 to function")
+	}
+	else {
+		V8_CHECK(V8::SafeToString(info[0], isolate, ctx, evName), "Failed to convert argument 0 to string")
+		V8_CHECK(V8::SafeToFunction(info[1], ctx, callback), "Failed to convert argument 1 to function")
+	}
 
 	resource->UnsubscribeLocal(evName.ToString(), callback);
 }
@@ -113,7 +131,7 @@ static void GetSyncedMeta(const v8::FunctionCallbackInfo<v8::Value> &info)
 static void Log(const v8::FunctionCallbackInfo<v8::Value> &info)
 {
 	V8_GET_ISOLATE_CONTEXT();
-	
+
 	V8_CHECK_ARGS_LEN_MIN(1);
 
 	std::stringstream ss;
@@ -265,7 +283,7 @@ void V8::RegisterSharedMain(v8::Local<v8::Context> ctx, v8::Local<v8::Object> ex
 #ifdef ALT_SERVER_API
 	V8::DefineOwnProperty(isolate, ctx, exports, "version", v8::String::NewFromUtf8(isolate, alt::ICore::Instance().GetVersion().CStr()));
 	V8::DefineOwnProperty(isolate, ctx, exports, "branch", v8::String::NewFromUtf8(isolate, alt::ICore::Instance().GetBranch().CStr()));
-#else 
+#else
 	V8::DefineOwnProperty(isolate, ctx, exports, "version", v8::String::NewFromUtf8(isolate, alt::ICore::Instance().GetVersion().CStr()).ToLocalChecked());
 	V8::DefineOwnProperty(isolate, ctx, exports, "branch", v8::String::NewFromUtf8(isolate, alt::ICore::Instance().GetBranch().CStr()).ToLocalChecked());
 #endif

@@ -32,6 +32,7 @@ public:
 	V8ResourceImpl(v8::Isolate *_isolate, alt::IResource *_resource) : isolate(_isolate),
 																	   resource(_resource)
 	{
+
 	}
 
 	~V8ResourceImpl();
@@ -53,16 +54,32 @@ public:
 
 	void SubscribeLocal(const std::string &ev, v8::Local<v8::Function> cb, V8::SourceLocation &&location)
 	{
-		localHandlers.insert({ev, V8::EventCallback{isolate, cb, std::move(location)}});
+		if (ev.empty())
+			localHandlers.insert({ ev, V8::GenericEventCallback{isolate, cb, std::move(location)} });
+		else
+			localHandlers.insert({ev, V8::EventCallback{isolate, cb, std::move(location)}});
 	}
 
 	void SubscribeRemote(const std::string &ev, v8::Local<v8::Function> cb, V8::SourceLocation &&location)
 	{
-		remoteHandlers.insert({ev, V8::EventCallback{isolate, cb, std::move(location)}});
+		if (ev.empty())
+			remoteHandlers.insert({ ev, V8::GenericEventCallback{isolate, cb, std::move(location)} });
+		else
+			remoteHandlers.insert({ ev, V8::EventCallback{isolate, cb, std::move(location)} });
 	}
 
 	void UnsubscribeLocal(const std::string &ev, v8::Local<v8::Function> cb)
 	{
+		if (!ev.empty()) {
+			auto range = localHandlers.equal_range(std::string());
+
+			for (auto it = range.first; it != range.second; ++it)
+			{
+				if (it->second.fn.Get(isolate)->StrictEquals(cb))
+					it->second.removed = true;
+			}
+		}
+
 		auto range = localHandlers.equal_range(ev);
 
 		for (auto it = range.first; it != range.second; ++it)
@@ -74,6 +91,16 @@ public:
 
 	void UnsubscribeRemote(const std::string &ev, v8::Local<v8::Function> cb)
 	{
+		if (!ev.empty()) {
+			auto range = localHandlers.equal_range(std::string());
+
+			for (auto it = range.first; it != range.second; ++it)
+			{
+				if (it->second.fn.Get(isolate)->StrictEquals(cb))
+					it->second.removed = true;
+			}
+		}
+
 		auto range = remoteHandlers.equal_range(ev);
 
 		for (auto it = range.first; it != range.second; ++it)
@@ -86,14 +113,15 @@ public:
 	void DispatchStartEvent(bool error)
 	{
 		std::vector<v8::Local<v8::Value>> args;
+		args.push_back(v8::String::NewFromUtf8(isolate, "resourceStart"));
 		args.push_back(v8::Boolean::New(isolate, error));
-
 		InvokeEventHandlers(nullptr, GetLocalHandlers("resourceStart"), args);
 	}
 
 	void DispatchStopEvent()
 	{
 		std::vector<v8::Local<v8::Value>> args;
+		args.push_back(v8::String::NewFromUtf8(isolate, "resourceStop"));
 		InvokeEventHandlers(nullptr, GetLocalHandlers("resourceStop"), args);
 	}
 

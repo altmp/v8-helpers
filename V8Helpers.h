@@ -118,8 +118,17 @@ namespace V8
 		v8::UniquePersistent<v8::Function> fn;
 		SourceLocation location;
 		bool removed = false;
+		bool generic = false;
 
 		EventCallback(v8::Isolate *isolate, v8::Local<v8::Function> _fn, SourceLocation &&location) : fn(isolate, _fn), location(std::move(location)) {}
+	};
+
+	struct GenericEventCallback : public EventCallback
+	{
+		GenericEventCallback(v8::Isolate* isolate, v8::Local<v8::Function> _fn, SourceLocation&& location) : EventCallback(isolate, _fn, std::move(location))
+		{
+			this->generic = true;
+		}
 	};
 
 	class EventHandler
@@ -154,10 +163,11 @@ namespace V8
 	class LocalEventHandler : public EventHandler
 	{
 	public:
-		LocalEventHandler(alt::CEvent::Type type, const std::string &name, ArgsGetter &&argsGetter) : EventHandler(type, std::move(GetCallbacksGetter(name)), std::move(argsGetter)) {}
-
+		LocalEventHandler(alt::CEvent::Type type, const std::string& name, ArgsGetter&& argsGetter)
+			: EventHandler(type, std::move(GetCallbacksGetter(name)), WrapWithNamedEvent(name, std::move(argsGetter))) {}
 	private:
 		static CallbacksGetter GetCallbacksGetter(const std::string &name);
+		static ArgsGetter WrapWithNamedEvent(const std::string& name, ArgsGetter&& wrapped);
 	};
 
 	void DefineOwnProperty(v8::Isolate *isolate, v8::Local<v8::Context> ctx, v8::Local<v8::Object> val,

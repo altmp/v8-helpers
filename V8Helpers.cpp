@@ -639,3 +639,13 @@ V8::EventHandler::CallbacksGetter V8::LocalEventHandler::GetCallbacksGetter(cons
 		return resource->GetLocalHandlers(name);
 	};
 }
+
+V8::EventHandler::ArgsGetter V8::LocalEventHandler::WrapWithNamedEvent(const std::string& name, ArgsGetter&& wrapped)
+{
+	return [name, wrapped](V8ResourceImpl* resource, const alt::CEvent* ev, std::vector<v8::Local<v8::Value>>& args) -> void
+	{
+		v8::Isolate* isolate = resource->GetIsolate();
+		args.push_back(v8::String::NewFromUtf8(isolate, name.c_str()));
+		return wrapped(resource, ev, args);
+	};
+}
