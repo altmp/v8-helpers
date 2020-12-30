@@ -44,7 +44,7 @@ void V8ResourceImpl::OnTick()
 		if (!p.second->Update(time))
 			RemoveTimer(p.first);
 
-		if (GetTime() - time > 10)
+		if (GetTime() - time > 10 && alt::ICore::Instance().IsDebug())
 		{
 			auto &location = p.second->GetLocation();
 
@@ -283,7 +283,7 @@ void V8ResourceImpl::InvokeEventHandlers(const alt::CEvent *ev, const std::vecto
 			return true;
 		});
 
-		if (GetTime() - time > 5)
+		if (GetTime() - time > 5 && alt::ICore::Instance().IsDebug())
 		{
 			if (handler->location.GetLineNumber() != 0)
 			{
