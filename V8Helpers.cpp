@@ -164,6 +164,18 @@ alt::MValue V8Helpers::V8ToMValue(v8::Local<v8::Value> val)
 						y->Value(),
 						z->Value() });
 			}
+			else if (resource->IsVector2(v8Obj))
+			{
+				v8::Local<v8::Number> x = v8Obj->Get(ctx, V8::Vector3_XKey(isolate)).ToLocalChecked()->ToNumber(ctx).ToLocalChecked();
+				v8::Local<v8::Number> y = v8Obj->Get(ctx, V8::Vector3_YKey(isolate)).ToLocalChecked()->ToNumber(ctx).ToLocalChecked();
+
+				return core.CreateMValueVector3(
+					alt::Vector3f{
+						x->Value(),
+						y->Value(),
+						0.0 });
+
+			}
 			else if (resource->IsRGBA(v8Obj))
 			{
 				v8::Local<v8::Number> r = v8Obj->Get(ctx, V8::RGBA_RKey(isolate)).ToLocalChecked()->ToNumber(ctx).ToLocalChecked();
