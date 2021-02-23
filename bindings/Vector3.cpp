@@ -113,6 +113,64 @@ static void Add(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 }
 
+static void Sub(const v8::FunctionCallbackInfo<v8::Value> &info)
+{
+
+	Log::Warning << "vector3.sub is deprecated and will be removed in the future. Consider using vector3.subtract" << Log::Endl;
+
+	V8_GET_ISOLATE_CONTEXT_RESOURCE();
+
+	V8_CHECK_ARGS_LEN2(1, 3);
+
+	v8::Local<v8::Object> _this = info.This();
+
+	V8_TO_NUMBER(V8::Get(ctx, _this, V8::Vector3_XKey(isolate)), x);
+	V8_TO_NUMBER(V8::Get(ctx, _this, V8::Vector3_YKey(isolate)), y);
+	V8_TO_NUMBER(V8::Get(ctx, _this, V8::Vector3_ZKey(isolate)), z);
+
+	if (info.Length() == 3)
+	{
+		V8_ARG_TO_NUMBER(1, x2);
+		V8_ARG_TO_NUMBER(2, y2);
+		V8_ARG_TO_NUMBER(3, z2);
+
+		V8_RETURN(resource->CreateVector3({x - x2, y - y2, z - z2}));
+	}
+	else if (info.Length() == 1)
+	{
+		auto arg = info[0];
+		if (arg->IsNumber())
+		{
+			V8_ARG_TO_NUMBER(1, value);
+			V8_RETURN(resource->CreateVector3({x - value, y - value, z - value}));
+		}
+		else if (arg->IsArray())
+		{
+			v8::Local<v8::Array> arr = arg.As<v8::Array>();
+			V8_CHECK(arr->Length() == 3, "Argument must be an array of 3 numbers");
+
+			V8_TO_NUMBER(arr->Get(ctx, 0).ToLocalChecked(), x2);
+			V8_TO_NUMBER(arr->Get(ctx, 1).ToLocalChecked(), y2);
+			V8_TO_NUMBER(arr->Get(ctx, 2).ToLocalChecked(), z2);
+			V8_RETURN(resource->CreateVector3({x - x2, y - y2, z - z2}));
+		}
+		else if (arg->IsObject())
+		{
+			v8::Local<v8::Object> obj = arg.As<v8::Object>();
+
+			V8_TO_NUMBER(obj->Get(ctx, V8::Vector3_XKey(isolate)).ToLocalChecked(), x2);
+			V8_TO_NUMBER(obj->Get(ctx, V8::Vector3_YKey(isolate)).ToLocalChecked(), y2);
+			V8_TO_NUMBER(obj->Get(ctx, V8::Vector3_ZKey(isolate)).ToLocalChecked(), z2);
+
+			V8_RETURN(resource->CreateVector3({x - x2, y - y2, z - z2}));
+		}
+		else
+		{
+			V8Helpers::Throw(isolate, "Argument must be a number, an array of 3 numbers or IVector3");
+		}
+	}
+}
+
 static void Subtract(const v8::FunctionCallbackInfo<v8::Value> &info)
 {
 	V8_GET_ISOLATE_CONTEXT_RESOURCE();
@@ -160,6 +218,67 @@ static void Subtract(const v8::FunctionCallbackInfo<v8::Value> &info)
 			V8_TO_NUMBER(obj->Get(ctx, V8::Vector3_ZKey(isolate)).ToLocalChecked(), z2);
 
 			V8_RETURN(resource->CreateVector3({ x - x2, y - y2, z - z2 }));
+		}
+		else
+		{
+			V8Helpers::Throw(isolate, "Argument must be a number, an array of 3 numbers or IVector3");
+		}
+	}
+}
+
+static void Div(const v8::FunctionCallbackInfo<v8::Value> &info)
+{
+
+	Log::Warning << "vector3.div is deprecated and will be removed in the future. Consider using vector3.divide" << Log::Endl;
+
+	V8_GET_ISOLATE_CONTEXT_RESOURCE();
+
+	V8_CHECK_ARGS_LEN2(1, 3);
+
+	v8::Local<v8::Object> _this = info.This();
+
+	V8_TO_NUMBER(V8::Get(ctx, _this, V8::Vector3_XKey(isolate)), x);
+	V8_TO_NUMBER(V8::Get(ctx, _this, V8::Vector3_YKey(isolate)), y);
+	V8_TO_NUMBER(V8::Get(ctx, _this, V8::Vector3_ZKey(isolate)), z);
+
+	if (info.Length() == 3)
+	{
+		V8_ARG_TO_NUMBER(1, x2);
+		V8_ARG_TO_NUMBER(2, y2);
+		V8_ARG_TO_NUMBER(3, z2);
+
+		V8_CHECK(x2 != 0 && y2 != 0 && z2 != 0, "Division by zero");
+		V8_RETURN(resource->CreateVector3({x / x2, y / y2, z / z2}));
+	}
+	else if (info.Length() == 1)
+	{
+		auto arg = info[0];
+		if (arg->IsNumber())
+		{
+			V8_ARG_TO_NUMBER(1, value);
+			V8_CHECK(value != 0, "Division by zero");
+			V8_RETURN(resource->CreateVector3({x / value, y / value, z / value}));
+		}
+		else if (arg->IsArray())
+		{
+			v8::Local<v8::Array> arr = arg.As<v8::Array>();
+			V8_CHECK(arr->Length() == 3, "Argument must be an array of 3 numbers");
+
+			V8_TO_NUMBER(arr->Get(ctx, 0).ToLocalChecked(), x2);
+			V8_TO_NUMBER(arr->Get(ctx, 1).ToLocalChecked(), y2);
+			V8_TO_NUMBER(arr->Get(ctx, 2).ToLocalChecked(), z2);
+			V8_CHECK(x2 != 0 && y2 != 0 && z2 != 0, "Division by zero");
+			V8_RETURN(resource->CreateVector3({x / x2, y / y2, z / z2}));
+		}
+		else if (arg->IsObject())
+		{
+			v8::Local<v8::Object> obj = arg.As<v8::Object>();
+
+			V8_TO_NUMBER(obj->Get(ctx, V8::Vector3_XKey(isolate)).ToLocalChecked(), x2);
+			V8_TO_NUMBER(obj->Get(ctx, V8::Vector3_YKey(isolate)).ToLocalChecked(), y2);
+			V8_TO_NUMBER(obj->Get(ctx, V8::Vector3_ZKey(isolate)).ToLocalChecked(), z2);
+			V8_CHECK(x2 != 0 && y2 != 0 && z2 != 0, "Division by zero");
+			V8_RETURN(resource->CreateVector3({x / x2, y / y2, z / z2}));
 		}
 		else
 		{
@@ -218,6 +337,64 @@ static void Divide(const v8::FunctionCallbackInfo<v8::Value>& info)
 			V8_TO_NUMBER(obj->Get(ctx, V8::Vector3_ZKey(isolate)).ToLocalChecked(), z2);
 			V8_CHECK(x2 != 0 && y2 != 0 && z2 != 0, "Division by zero");
 			V8_RETURN(resource->CreateVector3({ x / x2, y / y2, z / z2 }));
+		}
+		else
+		{
+			V8Helpers::Throw(isolate, "Argument must be a number, an array of 3 numbers or IVector3");
+		}
+	}
+}
+
+static void Mul(const v8::FunctionCallbackInfo<v8::Value> &info)
+{
+
+	Log::Warning << "vector3.mul is deprecated and will be removed in the future. Consider using vector3.mul" << Log::Endl;
+
+	V8_GET_ISOLATE_CONTEXT_RESOURCE();
+
+	V8_CHECK_ARGS_LEN2(1, 3);
+
+	v8::Local<v8::Object> _this = info.This();
+
+	V8_TO_NUMBER(V8::Get(ctx, _this, V8::Vector3_XKey(isolate)), x);
+	V8_TO_NUMBER(V8::Get(ctx, _this, V8::Vector3_YKey(isolate)), y);
+	V8_TO_NUMBER(V8::Get(ctx, _this, V8::Vector3_ZKey(isolate)), z);
+
+	if (info.Length() == 3)
+	{
+		V8_ARG_TO_NUMBER(1, x2);
+		V8_ARG_TO_NUMBER(2, y2);
+		V8_ARG_TO_NUMBER(3, z2);
+
+		V8_RETURN(resource->CreateVector3({x * x2, y * y2, z * z2}));
+	}
+	else if (info.Length() == 1)
+	{
+		auto arg = info[0];
+		if (arg->IsNumber())
+		{
+			V8_ARG_TO_NUMBER(1, value);
+			V8_RETURN(resource->CreateVector3({x * value, y * value, z * value}));
+		}
+		else if (arg->IsArray())
+		{
+			v8::Local<v8::Array> arr = arg.As<v8::Array>();
+			V8_CHECK(arr->Length() == 3, "Argument must be an array of 3 numbers");
+
+			V8_TO_NUMBER(arr->Get(ctx, 0).ToLocalChecked(), x2);
+			V8_TO_NUMBER(arr->Get(ctx, 1).ToLocalChecked(), y2);
+			V8_TO_NUMBER(arr->Get(ctx, 2).ToLocalChecked(), z2);
+			V8_RETURN(resource->CreateVector3({x * x2, y * y2, z * z2}));
+		}
+		else if (arg->IsObject())
+		{
+			v8::Local<v8::Object> obj = arg.As<v8::Object>();
+
+			V8_TO_NUMBER(obj->Get(ctx, V8::Vector3_XKey(isolate)).ToLocalChecked(), x2);
+			V8_TO_NUMBER(obj->Get(ctx, V8::Vector3_YKey(isolate)).ToLocalChecked(), y2);
+			V8_TO_NUMBER(obj->Get(ctx, V8::Vector3_ZKey(isolate)).ToLocalChecked(), z2);
+
+			V8_RETURN(resource->CreateVector3({x * x2, y * y2, z * z2}));
 		}
 		else
 		{
@@ -546,4 +723,9 @@ extern V8Class v8Vector3("Vector3", Constructor, [](v8::Local<v8::FunctionTempla
 	V8::SetMethod(isolate, tpl, "toRadians", ToRadians);
 	V8::SetMethod(isolate, tpl, "toDegrees", ToDegrees);
 	V8::SetMethod(isolate, tpl, "isInRange", IsInRange);
+
+	// to deprecate
+	V8::SetMethod(isolate, tpl, "sub", Sub);
+	V8::SetMethod(isolate, tpl, "div", Div);
+	V8::SetMethod(isolate, tpl, "mul", Mul);
 });
