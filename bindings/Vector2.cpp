@@ -102,7 +102,7 @@ static void Add(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 }
 
-static void Sub(const v8::FunctionCallbackInfo<v8::Value>& info)
+static void Subtract(const v8::FunctionCallbackInfo<v8::Value> &info)
 {
 	V8_GET_ISOLATE_CONTEXT_RESOURCE();
 
@@ -489,9 +489,9 @@ extern V8Class v8Vector2("Vector2", Constructor, [](v8::Local<v8::FunctionTempla
 	V8::SetMethod(isolate, tpl, "toString", ToString);
 	V8::SetMethod(isolate, tpl, "toArray", ToArray);
 	V8::SetMethod(isolate, tpl, "add", Add);
-	V8::SetMethod(isolate, tpl, "sub", Sub);
-	V8::SetMethod(isolate, tpl, "div", Divide);
-	V8::SetMethod(isolate, tpl, "mul", Multiply);
+	V8::SetMethod(isolate, tpl, "subtract", Subtract);
+	V8::SetMethod(isolate, tpl, "divide", Divide);
+	V8::SetMethod(isolate, tpl, "multiply", Multiply);
 	V8::SetMethod(isolate, tpl, "negative", Negative);
 	V8::SetMethod(isolate, tpl, "normalize", Normalize);
 	V8::SetMethod(isolate, tpl, "distanceTo", DistanceTo);
