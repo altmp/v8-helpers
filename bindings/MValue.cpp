@@ -28,6 +28,7 @@ static void Destroy(const v8::FunctionCallbackInfo<v8::Value>& info)
     auto value = info.This()->GetInternalField(0);
     V8_CHECK(!value.IsEmpty(), "MValue is empty");
     static_cast<alt::IMValue*>(info.This()->GetInternalField(0).As<v8::External>()->Value())->RemoveRef();
+    info.This()->SetInternalField(0, v8::Local<v8::Value>());
 }
 
 static void Constructor(const v8::FunctionCallbackInfo<v8::Value>& info)
