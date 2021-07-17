@@ -21,6 +21,13 @@ static void TypeGetter(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8:
     V8_RETURN_ENUM(static_cast<alt::IMValue*>(value.As<v8::External>()->Value())->GetType());
 }
 
+static void ValidGetter(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
+{
+    V8_GET_ISOLATE();
+
+    V8_RETURN_BOOLEAN(!info.This()->GetInternalField(0).IsEmpty());
+}
+
 static void Destroy(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
     V8_GET_ISOLATE();
@@ -49,5 +56,6 @@ extern V8Class v8MValue("MValue", Constructor, [](v8::Local<v8::FunctionTemplate
 
     V8::SetAccessor(isolate, tpl, "value", &ValueGetter);
     V8::SetAccessor(isolate, tpl, "type", &TypeGetter);
+    V8::SetAccessor(isolate, tpl, "valid", &ValidGetter);
     V8::SetMethod(isolate, tpl, "destroy", &Destroy);
 });
