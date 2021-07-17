@@ -19,13 +19,14 @@ V8ResourceImpl::~V8ResourceImpl() {
 	entities.clear();
 }
 
-extern V8Class v8Vector3, v8Vector2, v8RGBA, v8BaseObject;
+extern V8Class v8Vector3, v8Vector2, v8RGBA, v8BaseObject, v8MValue;
 bool V8ResourceImpl::Start()
 {
 	vector3Class.Reset(isolate, v8Vector3.JSValue(isolate, GetContext()));
 	vector2Class.Reset(isolate, v8Vector2.JSValue(isolate, GetContext()));
 	rgbaClass.Reset(isolate, v8RGBA.JSValue(isolate, GetContext()));
 	baseObjectClass.Reset(isolate, v8BaseObject.JSValue(isolate, GetContext()));
+	mvalueClass.Reset(isolate, v8MValue.JSValue(isolate, GetContext()));
 
 	return true;
 }
@@ -158,6 +159,11 @@ bool V8ResourceImpl::IsRGBA(v8::Local<v8::Value> val)
 bool V8ResourceImpl::IsBaseObject(v8::Local<v8::Value> val)
 {
 	return val->InstanceOf(GetContext(), baseObjectClass.Get(isolate)).ToChecked();
+}
+
+bool V8ResourceImpl::IsMValue(v8::Local<v8::Value> val) 
+{
+	return val->InstanceOf(GetContext(), mvalueClass.Get(isolate)).ToChecked();
 }
 
 void V8ResourceImpl::OnCreateBaseObject(alt::Ref<alt::IBaseObject> handle)

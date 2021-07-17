@@ -175,6 +175,7 @@ public:
 	bool IsVector2(v8::Local<v8::Value> val);
 	bool IsRGBA(v8::Local<v8::Value> val);
 	bool IsBaseObject(v8::Local<v8::Value> val);
+	bool IsMValue(v8::Local<v8::Value> val);
 
 	void OnCreateBaseObject(alt::Ref<alt::IBaseObject> handle) override;
 	void OnRemoveBaseObject(alt::Ref<alt::IBaseObject> handle) override;
@@ -262,8 +263,8 @@ protected:
 	v8::Persistent<v8::Function> vector2Class;
 	v8::Persistent<v8::Function> rgbaClass;
 	v8::Persistent<v8::Function> baseObjectClass;
+	v8::Persistent<v8::Function> mvalueClass;
 
-	// TEMP
 	static int64_t GetTime()
 	{
 		return std::chrono::duration_cast<std::chrono::milliseconds>(
