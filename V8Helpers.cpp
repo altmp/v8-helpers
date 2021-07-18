@@ -164,7 +164,10 @@ alt::MValue V8Helpers::V8ToMValue(v8::Local<v8::Value> val)
 			V8ResourceImpl* resource = V8ResourceImpl::Get(ctx);
 			v8::Local<v8::Object> v8Obj = val.As<v8::Object>();
 
-			//if (v8Obj->InstanceOf(ctx, v8Vector3->JSValue(isolate, ctx)).ToChecked())
+			if(resource->IsMValue(v8Obj))
+			{
+				return static_cast<alt::IMValue*>(v8Obj->GetInternalField(0).As<v8::External>()->Value());
+			}
 			if (resource->IsVector3(v8Obj))
 			{
 				v8::Local<v8::Number> x = v8Obj->Get(ctx, V8::Vector3_XKey(isolate)).ToLocalChecked()->ToNumber(ctx).ToLocalChecked();

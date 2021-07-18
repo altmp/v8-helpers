@@ -82,11 +82,7 @@ static void Emit(const v8::FunctionCallbackInfo<v8::Value> &info)
 	alt::MValueArgs args;
 
 	for (int i = 1; i < info.Length(); ++i)
-	{
-		v8::Local<v8::Value> val = info[i];
-		if(resource->IsMValue(val)) args.Push(static_cast<alt::IMValue*>(val.As<v8::Object>()->GetInternalField(0).As<v8::External>()->Value()));
-		else args.Push(V8Helpers::V8ToMValue(val));
-	}
+		args.Push(V8Helpers::V8ToMValue(info[i]));
 
 	alt::ICore::Instance().TriggerLocalEvent(name, args);
 }
