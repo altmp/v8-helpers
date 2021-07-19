@@ -397,4 +397,13 @@ extern V8Module v8Shared("alt-shared", nullptr,
 	V8_OBJECT_SET_BOOLEAN(exports, "debug", alt::ICore::Instance().IsDebug());
 
 	V8_OBJECT_SET_STRING(exports, "resourceName", V8ResourceImpl::GetResource(ctx)->GetName());
+
+#ifdef ALT_CLIENT_API
+	V8_OBJECT_SET_BOOLEAN(exports, "isClient", true);
+	V8_OBJECT_SET_BOOLEAN(exports, "isServer", false);
+#endif
+#ifdef ALT_SERVER_API
+	V8_OBJECT_SET_BOOLEAN(exports, "isClient", false);
+	V8_OBJECT_SET_BOOLEAN(exports, "isServer", true);
+#endif
 });
