@@ -224,12 +224,26 @@ static void StaticAllGetter(v8::Local<v8::String>, const v8::PropertyCallbackInf
 	V8_RETURN(arr);
 }
 
+static void ToString(const v8::FunctionCallbackInfo<v8::Value> &info)
+{
+    V8_GET_ISOLATE_CONTEXT();
+
+	V8_GET_THIS_BASE_OBJECT(entity, alt::IEntity);
+
+    std::ostringstream ss;
+    ss << "Entity{ id: " << std::to_string(entity->GetID()) << ", type: " << (uint32_t)entity->GetType() << " }";
+
+    V8_RETURN_STRING(ss.str().c_str());
+}
+
 extern V8Class v8WorldObject;
 extern V8Class v8Entity("Entity", v8WorldObject, [](v8::Local<v8::FunctionTemplate> tpl) {
 	v8::Isolate *isolate = v8::Isolate::GetCurrent();
 
 	V8::SetStaticMethod(isolate, tpl, "getByID", StaticGetByID);
 	V8::SetStaticAccessor(isolate, tpl, "all", StaticAllGetter);
+
+	V8::SetMethod(isolate, tpl, "toString", ToString);
 
 	V8::SetAccessor<IEntity, uint16_t, &IEntity::GetID>(isolate, tpl, "id");
 	V8::SetAccessor<IEntity, Ref<IPlayer>, &IEntity::GetNetworkOwner>(isolate, tpl, "netOwner");

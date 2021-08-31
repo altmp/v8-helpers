@@ -83,6 +83,18 @@ static void Destroy(const v8::FunctionCallbackInfo<v8::Value> &info)
 	alt::ICore::Instance().DestroyBaseObject(obj);
 }
 
+static void ToString(const v8::FunctionCallbackInfo<v8::Value> &info)
+{
+    V8_GET_ISOLATE_CONTEXT();
+
+	V8_GET_THIS_BASE_OBJECT(obj, alt::IBaseObject);
+
+    std::ostringstream ss;
+    ss << "Baseobject{ type: " << (uint32_t)obj->GetType() << " }";
+
+    V8_RETURN_STRING(ss.str().c_str());
+}
+
 extern V8Class v8BaseObject("BaseObject", [](v8::Local<v8::FunctionTemplate> tpl) {
 	v8::Isolate *isolate = v8::Isolate::GetCurrent();
 
@@ -96,4 +108,6 @@ extern V8Class v8BaseObject("BaseObject", [](v8::Local<v8::FunctionTemplate> tpl
 	V8::SetMethod(isolate, tpl, "setMeta", SetMeta);
 	V8::SetMethod(isolate, tpl, "deleteMeta", DeleteMeta);
 	V8::SetMethod(isolate, tpl, "destroy", Destroy);
+
+	V8::SetMethod(isolate, tpl, "toString", ToString);
 });
