@@ -498,7 +498,7 @@ static void StaticOne(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::
 {
 	V8_GET_ISOLATE();
 	V8_GET_RESOURCE();
-	static auto one = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({1, 1}).As<v8::Object>());
+	static auto one = v8::Eternal<v8::Object>(isolate, resource->CreateVector2({1, 1}).As<v8::Object>());
 
 	V8_RETURN(one.Get(isolate));
 }
@@ -507,7 +507,7 @@ static void StaticUp(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::V
 {
 	V8_GET_ISOLATE();
 	V8_GET_RESOURCE();
-	static auto up = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({0, 1}).As<v8::Object>());
+	static auto up = v8::Eternal<v8::Object>(isolate, resource->CreateVector2({0, 1}).As<v8::Object>());
 
 	V8_RETURN(up.Get(isolate));
 }
@@ -516,7 +516,7 @@ static void StaticDown(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8:
 {
 	V8_GET_ISOLATE();
 	V8_GET_RESOURCE();
-	static auto down = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({0, -1}).As<v8::Object>());
+	static auto down = v8::Eternal<v8::Object>(isolate, resource->CreateVector2({0, -1}).As<v8::Object>());
 
 	V8_RETURN(down.Get(isolate));
 }
@@ -525,7 +525,7 @@ static void StaticLeft(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8:
 {
 	V8_GET_ISOLATE();
 	V8_GET_RESOURCE();
-	static auto left = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({-1, 0}).As<v8::Object>());
+	static auto left = v8::Eternal<v8::Object>(isolate, resource->CreateVector2({-1, 0}).As<v8::Object>());
 
 	V8_RETURN(left.Get(isolate));
 }
@@ -534,7 +534,7 @@ static void StaticRight(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8
 {
 	V8_GET_ISOLATE();
 	V8_GET_RESOURCE();
-	static auto right = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({1, 0}).As<v8::Object>());
+	static auto right = v8::Eternal<v8::Object>(isolate, resource->CreateVector2({1, 0}).As<v8::Object>());
 
 	V8_RETURN(right.Get(isolate));
 }
