@@ -655,6 +655,28 @@ static void StaticUp(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::V
 	V8_RETURN(up.Get(isolate));
 }
 
+static void StaticNegativeInfinity(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
+{
+	V8_GET_ISOLATE();
+	V8_GET_RESOURCE();
+
+	float infinity = -std::numeric_limits<float>::infinity();
+	static auto negativeInfinity = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({infinity, infinity, infinity}).As<v8::Object>());
+
+	V8_RETURN(negativeInfinity.Get(isolate));
+}
+
+static void StaticPositiveInfinity(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
+{
+	V8_GET_ISOLATE();
+	V8_GET_RESOURCE();
+
+	float infinity = std::numeric_limits<float>::infinity();
+	static auto positiveInfinity = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({infinity, infinity, infinity}).As<v8::Object>());
+
+	V8_RETURN(positiveInfinity.Get(isolate));
+}
+
 
 static void Constructor(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
@@ -729,6 +751,8 @@ extern V8Class v8Vector3("Vector3", Constructor, [](v8::Local<v8::FunctionTempla
 	V8::SetStaticAccessor(isolate, tpl, "left", StaticLeft);
 	V8::SetStaticAccessor(isolate, tpl, "right", StaticRight);
 	V8::SetStaticAccessor(isolate, tpl, "up", StaticUp);
+	V8::SetStaticAccessor(isolate, tpl, "negativeInfinity", StaticNegativeInfinity);
+	V8::SetStaticAccessor(isolate, tpl, "positiveInfinity", StaticPositiveInfinity);
 
 	V8::SetAccessor(isolate, tpl, "length", Length);
 	V8::SetMethod(isolate, tpl, "toString", ToString);
