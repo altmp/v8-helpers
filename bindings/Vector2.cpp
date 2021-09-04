@@ -625,6 +625,8 @@ extern V8Class v8Vector2("Vector2", Constructor, [](v8::Local<v8::FunctionTempla
 	V8::SetStaticAccessor(isolate, tpl, "down", StaticDown);
 	V8::SetStaticAccessor(isolate, tpl, "left", StaticLeft);
 	V8::SetStaticAccessor(isolate, tpl, "right", StaticRight);
+	V8::SetStaticAccessor(isolate, tpl, "negativeInfinity", StaticNegativeInfinity);
+	V8::SetStaticAccessor(isolate, tpl, "positiveInfinity", StaticPositiveInfinity);
 
 	V8::SetAccessor(isolate, tpl, "length", Length);
 	V8::SetMethod(isolate, tpl, "toString", ToString);
