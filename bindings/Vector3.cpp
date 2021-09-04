@@ -592,6 +592,15 @@ static void StaticZero(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8:
 	V8_RETURN(zero.Get(isolate));
 }
 
+static void StaticOne(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
+{
+	V8_GET_ISOLATE();
+	V8_GET_RESOURCE();
+	static auto one = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({1, 1, 1}).As<v8::Object>());
+
+	V8_RETURN(one.Get(isolate));
+}
+
 static void StaticBack(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
 {
 	V8_GET_ISOLATE();
@@ -626,15 +635,6 @@ static void StaticLeft(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8:
 	static auto left = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({-1, 0, 0}).As<v8::Object>());
 
 	V8_RETURN(left.Get(isolate));
-}
-
-static void StaticOne(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
-{
-	V8_GET_ISOLATE();
-	V8_GET_RESOURCE();
-	static auto one = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({1, 1, 1}).As<v8::Object>());
-
-	V8_RETURN(one.Get(isolate));
 }
 
 static void StaticRight(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
@@ -722,11 +722,11 @@ extern V8Class v8Vector3("Vector3", Constructor, [](v8::Local<v8::FunctionTempla
 	v8::Isolate *isolate = v8::Isolate::GetCurrent();
 
 	V8::SetStaticAccessor(isolate, tpl, "zero", StaticZero);
+	V8::SetStaticAccessor(isolate, tpl, "one", StaticOne);
 	V8::SetStaticAccessor(isolate, tpl, "back", StaticBack);
 	V8::SetStaticAccessor(isolate, tpl, "down", StaticDown);
 	V8::SetStaticAccessor(isolate, tpl, "forward", StaticForward);
 	V8::SetStaticAccessor(isolate, tpl, "left", StaticLeft);
-	V8::SetStaticAccessor(isolate, tpl, "one", StaticOne);
 	V8::SetStaticAccessor(isolate, tpl, "right", StaticRight);
 	V8::SetStaticAccessor(isolate, tpl, "up", StaticUp);
 
