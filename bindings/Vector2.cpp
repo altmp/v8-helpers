@@ -485,6 +485,60 @@ static void IsInRange(const v8::FunctionCallbackInfo<v8::Value>& info)
 	V8_RETURN_BOOLEAN(isInRange);
 }
 
+static void StaticZero(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
+{
+	V8_GET_ISOLATE();
+	V8_GET_RESOURCE();
+	static auto zero = v8::Eternal<v8::Object>(isolate, resource->CreateVector2({0, 0}).As<v8::Object>());
+
+	V8_RETURN(zero.Get(isolate));
+}
+
+static void StaticOne(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
+{
+	V8_GET_ISOLATE();
+	V8_GET_RESOURCE();
+	static auto one = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({1, 1}).As<v8::Object>());
+
+	V8_RETURN(one.Get(isolate));
+}
+
+static void StaticUp(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
+{
+	V8_GET_ISOLATE();
+	V8_GET_RESOURCE();
+	static auto up = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({0, 1}).As<v8::Object>());
+
+	V8_RETURN(up.Get(isolate));
+}
+
+static void StaticDown(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
+{
+	V8_GET_ISOLATE();
+	V8_GET_RESOURCE();
+	static auto down = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({0, -1}).As<v8::Object>());
+
+	V8_RETURN(down.Get(isolate));
+}
+
+static void StaticLeft(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
+{
+	V8_GET_ISOLATE();
+	V8_GET_RESOURCE();
+	static auto left = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({-1, 0}).As<v8::Object>());
+
+	V8_RETURN(left.Get(isolate));
+}
+
+static void StaticRight(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
+{
+	V8_GET_ISOLATE();
+	V8_GET_RESOURCE();
+	static auto right = v8::Eternal<v8::Object>(isolate, resource->CreateVector3({1, 0}).As<v8::Object>());
+
+	V8_RETURN(right.Get(isolate));
+}
+
 static void Constructor(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
 	V8_GET_ISOLATE_CONTEXT();
@@ -542,6 +596,13 @@ static void Constructor(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 extern V8Class v8Vector2("Vector2", Constructor, [](v8::Local<v8::FunctionTemplate> tpl) {
 	v8::Isolate *isolate = v8::Isolate::GetCurrent();
+
+	V8::SetStaticAccessor(isolate, tpl, "zero", StaticZero);
+	V8::SetStaticAccessor(isolate, tpl, "one", StaticOne);
+	V8::SetStaticAccessor(isolate, tpl, "up", StaticUp);
+	V8::SetStaticAccessor(isolate, tpl, "down", StaticDown);
+	V8::SetStaticAccessor(isolate, tpl, "left", StaticLeft);
+	V8::SetStaticAccessor(isolate, tpl, "right", StaticRight);
 
 	V8::SetAccessor(isolate, tpl, "length", Length);
 	V8::SetMethod(isolate, tpl, "toString", ToString);
