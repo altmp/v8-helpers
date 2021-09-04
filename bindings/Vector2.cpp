@@ -539,6 +539,28 @@ static void StaticRight(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8
 	V8_RETURN(right.Get(isolate));
 }
 
+static void StaticNegativeInfinity(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
+{
+	V8_GET_ISOLATE();
+	V8_GET_RESOURCE();
+
+	float infinity = -std::numeric_limits<float>::infinity();
+	static auto negativeInfinity = v8::Eternal<v8::Object>(isolate, resource->CreateVector2({infinity, infinity}).As<v8::Object>());
+
+	V8_RETURN(negativeInfinity.Get(isolate));
+}
+
+static void StaticPositiveInfinity(v8::Local<v8::String>, const v8::PropertyCallbackInfo<v8::Value>& info)
+{
+	V8_GET_ISOLATE();
+	V8_GET_RESOURCE();
+
+	float infinity = std::numeric_limits<float>::infinity();
+	static auto positiveInfinity = v8::Eternal<v8::Object>(isolate, resource->CreateVector2({infinity, infinity}).As<v8::Object>());
+
+	V8_RETURN(positiveInfinity.Get(isolate));
+}
+
 static void Constructor(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
 	V8_GET_ISOLATE_CONTEXT();
